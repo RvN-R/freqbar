@@ -6,6 +6,7 @@
 
 const container = document.getElementById('container');
 const canvas = document.getElementById('canvas1');
+const file = document.getElementById('fileupload');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
@@ -19,6 +20,41 @@ container.addEventListener('click', function(){
     const audioContext = new AudioContext();
     audio1.play();
     // setting the audio source as the wav at the top of the code
+    audioSource = audioContext.createMediaElementSource(audio1);
+    analyser = audioContext.createAnalyser();
+    audioSource.connect(analyser);
+    analyser.connect(audioContext.destination);
+    analyser.fftSize = 8192;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const barWidth = canvas.width/bufferLength;
+    let barHeight;
+    let x;
+
+    // animate for bar graph frequency display
+    function animate(){
+        x = 0;
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        analyser.getByteFrequencyData(dataArray);
+        for(let i = 0; i < bufferLength; i++){
+            barHeight = dataArray[i];
+            ctx.fillStyle = 'red';
+            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+            x += barWidth;
+        }
+        requestAnimationFrame(animate);
+    }
+    return animate();
+});
+
+// Ability to load files from computer, play them and trigger the visualizer
+file.addEventListener('change', function(){
+    const files = this.files;
+    const audio1 = document.getElementById('audio1');
+    audio1.src = URL.createObjectURL(files[0]);
+    audio1.load();
+    audio1.play();
     audioSource = audioContext.createMediaElementSource(audio1);
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);

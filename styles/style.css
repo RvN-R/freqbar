@@ -26,3 +26,10 @@
     margin: 50px auto;
     display: block;
 }
+
+#fileupload{
+    position:absolute;
+    top: 150px;
+    color: white;
+    z-index: 100;
+}
