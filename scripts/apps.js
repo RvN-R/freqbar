@@ -24,11 +24,13 @@ container.addEventListener('click', function(){
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 8192;
+    analyser.fftSize = 1024;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-
-    const barWidth = canvas.width/bufferLength;
+    
+    const barWidth = (canvas.width/2)/bufferLength;
+    // Below barWidth is to be used with simple bar frequency graph
+    // const barWidth = canvas.width/bufferLength;
     let barHeight;
     let x;
 
@@ -37,12 +39,7 @@ container.addEventListener('click', function(){
         x = 0;
         ctx.clearRect(0,0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for(let i = 0; i < bufferLength; i++){
-            barHeight = dataArray[i];
-            ctx.fillStyle = 'red';
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            x += barWidth;
-        }
+        drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
         requestAnimationFrame(animate);
     }
     return animate();
@@ -59,11 +56,13 @@ file.addEventListener('change', function(){
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 8192;
+    analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
-    const barWidth = canvas.width/bufferLength;
+    const barWidth = (canvas.width/2)/bufferLength;
+    // Below barWidth is to be used with simple bar frequency graph
+    // const barWidth = canvas.width/bufferLength;
     let barHeight;
     let x;
 
@@ -72,18 +71,47 @@ file.addEventListener('change', function(){
         x = 0;
         ctx.clearRect(0,0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for(let i = 0; i < bufferLength; i++){
-            barHeight = dataArray[i];
-            ctx.fillStyle = 'red';
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            x += barWidth;
-        }
+        drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
         requestAnimationFrame(animate);
     }
     return animate();
 });
 
+// Below version of drawVisualiser is a simple bar frequency graph with one colour
+// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+//     for(let i = 0; i < bufferLength; i++){
+//         barHeight = dataArray[i];
+//         ctx.fillStyle = 'red';
+//         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+//         x += barWidth;
+//     }
+// }
 
+// Below version of drawVisualiser, has a left and right
+function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i] * 2;
+        const red = i * barHeight/30;
+        const green = i/2; 
+        const blue = barHeight;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight -30 , barWidth, 15);
+        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i] * 2;
+        const red = i * barHeight/30;
+        const green = i/2; 
+        const blue = barHeight;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x, canvas.height - barHeight -30 , barWidth, 15);
+        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+}
 
 // button1.addEventListener('click', function(){
 //     audio1.play();
