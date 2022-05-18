@@ -24,7 +24,7 @@ container.addEventListener('click', function(){
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 1024;
+    analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     
@@ -88,30 +88,65 @@ file.addEventListener('change', function(){
 // }
 
 // Below version of drawVisualiser, has a left and right
+// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+//     for(let i = 0; i < bufferLength; i++){
+//         barHeight = dataArray[i] * 2;
+//         const red = i * barHeight/30;
+//         const green = i/2; 
+//         const blue = barHeight;
+//         ctx.fillStyle = 'white';
+//         ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight -30 , barWidth, 15);
+//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+//         ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight, barWidth, barHeight);
+//         x += barWidth;
+//     }
+//     for(let i = 0; i < bufferLength; i++){
+//         barHeight = dataArray[i] * 2;
+//         const red = i * barHeight/30;
+//         const green = i/2; 
+//         const blue = barHeight;
+//         ctx.fillStyle = 'white';
+//         ctx.fillRect(x, canvas.height - barHeight -30 , barWidth, 15);
+//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+//         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+//         x += barWidth;
+//     }
+// }
+
+// Below drawVisualiser is a ciicle Visualiser
+// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+//     for(let i = 0; i < bufferLength; i++){
+//         barHeight = dataArray[i];
+//         ctx.save();
+//         ctx.translate(canvas.width/2, canvas.height/2);
+//         ctx.rotate(i + Math.PI * 2/ bufferLength);
+//         const red = i * barHeight/30;
+//         const green = i/2; 
+//         const blue = barHeight;
+//         ctx.fillStyle = 'white';
+//         ctx.fillRect(0, 0, barWidth, 15);
+//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+//         ctx.fillRect(0, 0, barWidth, barHeight);
+//         x += barWidth;
+//         ctx.restore();
+//     }
+// }
+
+// Below drawVisualiser is a strange spriral visualiser
 function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
     for(let i = 0; i < bufferLength; i++){
-        barHeight = dataArray[i] * 2;
-        const red = i * barHeight/30;
-        const green = i/2; 
-        const blue = barHeight;
-        ctx.fillStyle = 'white';
-        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight -30 , barWidth, 15);
-        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
-        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight, barWidth, barHeight);
+        barHeight = dataArray[i] * 1.5;
+        ctx.save();
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(i * Math.PI * 4/ bufferLength);
+        const hue = i * 15;
+        ctx.fillStyle = 'hsl(' + hue + ',100%, 50%)';
+        ctx.fillRect(0, 0, barWidth, barHeight);
         x += barWidth;
-    }
-    for(let i = 0; i < bufferLength; i++){
-        barHeight = dataArray[i] * 2;
-        const red = i * barHeight/30;
-        const green = i/2; 
-        const blue = barHeight;
-        ctx.fillStyle = 'white';
-        ctx.fillRect(x, canvas.height - barHeight -30 , barWidth, 15);
-        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth;
+        ctx.restore();
     }
 }
+
 
 // button1.addEventListener('click', function(){
 //     audio1.play();
