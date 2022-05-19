@@ -13,11 +13,12 @@ const ctx = canvas.getContext('2d');
 let audioSource;
 let analyser;
 
-let freqBar = false
-let peakBar = false
-let circleBar = false
-let swrilBar = false
+var freqBar = false
+var peakBar = false
+var circleBar = false
+var swrilBar = false
 
+//put click in the event listener below to get audio to play.
 container.addEventListener('#', function(){
     // audio source
     const audio1 = document.getElementById('audio1');
@@ -176,7 +177,14 @@ function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
 //     }, 200);
 // }
 
-// let selector = docuement.getElementById("visuals")
+let selector = document.getElementById("visuals");
+
+selector.addEventListener('change', function(){
+  console.log("This is freqbar",freqBar)
+  console.log("This is peakBar",peakBar)
+  console.log("This is circleBar",circleBar)
+  console.log("This is swirlBar",swrilBar)
+})
 
 function changeOpt(event){
   const frequencyBarGraph = "Frequecy Bar Graph"
@@ -195,10 +203,6 @@ function changeOpt(event){
   }else{
     swrilBar = true;
   }
-  console.log("This is freqbar",freqBar)
-  console.log("This is peakBar",peakBar)
-  console.log("This is circleBar",circleBar)
-  console.log("This is swirlBar",swrilBar)
 }
 
 
