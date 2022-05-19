@@ -13,7 +13,17 @@
         <!-- <button id="button1">Button 1</button> -->
         <canvas id="canvas1"></canvas>
         <audio id='audio1'controls></audio>
-        <input type="file" id="fileupload" accept="audio/*"/>
+        <div>
+            <input type="file" id="fileupload" accept="audio/*"/>s
+            <label for="visuals">Choose a Visual:</label>
+            <select name="visuals" id="visuals" onchange="changeOpt.call(this, event)">
+                <option value="1">Frequecy Bar Graph</option>
+                <option value="2">Peak Bar Graph</option>
+                <option value="3">Circle Graph</option>
+                <option value="4">Swirl Graph</option>
+            </select>
+        </div>
+
     </div>
 
     <script src="scripts/apps.js"></script>

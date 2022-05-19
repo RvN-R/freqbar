@@ -34,3 +34,17 @@
     color: white;
     z-index: 100;
 }
+
+#visuals{
+    position:relative;
+    top: 150px;
+    color: black;
+    z-index: 200;
+}
+
+label{
+    position: relative;
+    top: 150px;
+    color: white;
+    z-index: 200;
+}

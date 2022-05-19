@@ -13,7 +13,12 @@ const ctx = canvas.getContext('2d');
 let audioSource;
 let analyser;
 
-container.addEventListener('click', function(){
+let freqBar = false
+let peakBar = false
+let circleBar = false
+let swrilBar = false
+
+container.addEventListener('#', function(){
     // audio source
     const audio1 = document.getElementById('audio1');
     audio1.src = 'ChildrenOfTheNightBeat.wav';
@@ -72,6 +77,7 @@ file.addEventListener('change', function(){
         ctx.clearRect(0,0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
         drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
+        
         requestAnimationFrame(animate);
     }
     return animate();
@@ -169,3 +175,31 @@ function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
 //         oscillator.stop();
 //     }, 200);
 // }
+
+// let selector = docuement.getElementById("visuals")
+
+function changeOpt(event){
+  const frequencyBarGraph = "Frequecy Bar Graph"
+  const peakBarGraph = "Peak Bar Graph"
+  const circleGraph = "Circle Graph"
+  const swirlGraph = "Swirl Graph"
+
+  const selectedValue = this.options[this.selectedIndex].text;
+
+  if(frequencyBarGraph == selectedValue){
+    freqBar = true;
+  }else if(peakBarGraph == selectedValue){
+    peakBar = true;
+  }else if(circleGraph == selectedValue){
+    circleBar = true;
+  }else{
+    swrilBar = true;
+  }
+  console.log("This is freqbar",freqBar)
+  console.log("This is peakBar",peakBar)
+  console.log("This is circleBar",circleBar)
+  console.log("This is swirlBar",swrilBar)
+}
+
+
+
