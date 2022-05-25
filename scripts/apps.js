@@ -13,7 +13,7 @@ const ctx = canvas.getContext('2d');
 let audioSource;
 let analyser;
 
-var freqBar = false
+var freqBar = true
 var peakBar = false
 var circleBar = false
 var swrilBar = false
@@ -55,6 +55,7 @@ container.addEventListener('#', function(){
 file.addEventListener('change', function(){
     const files = this.files;
     const audio1 = document.getElementById('audio1');
+    const audioContext = new AudioContext();
     audio1.src = URL.createObjectURL(files[0]);
     audio1.load();
     audio1.play();
@@ -77,8 +78,10 @@ file.addEventListener('change', function(){
         x = 0;
         ctx.clearRect(0,0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
-        
+        if(freqBar == true){
+          drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
+        }
+        // drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
         requestAnimationFrame(animate);
     }
     return animate();
