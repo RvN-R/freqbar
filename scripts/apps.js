@@ -179,11 +179,16 @@ function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
 
 let selector = document.getElementById("visuals");
 
-selector.addEventListener('change', function(){
-  console.log("This is freqbar",freqBar)
-  console.log("This is peakBar",peakBar)
-  console.log("This is circleBar",circleBar)
-  console.log("This is swirlBar",swrilBar)
+selector.addEventListener('change', function(event){
+  if(freqBar == true){
+    console.log("This is freqbar",freqBar)
+  }else if(peakBar == true){
+    console.log("This is peakBar",peakBar)
+  }else if(circleBar ==true){
+    console.log("This is circleBar",circleBar)
+  }else{
+    console.log("This is swirlBar",swrilBar)
+  }
 })
 
 function changeOpt(event){
@@ -195,13 +200,13 @@ function changeOpt(event){
   const selectedValue = this.options[this.selectedIndex].text;
 
   if(frequencyBarGraph == selectedValue){
-    freqBar = true;
+    freqBar = true; peakBar = false; circleBar=false; swrilBar=false;
   }else if(peakBarGraph == selectedValue){
-    peakBar = true;
+    peakBar = true; freqBar=false; circleBar=false; swrilBar=false;
   }else if(circleGraph == selectedValue){
-    circleBar = true;
+    circleBar = true; peakBar = false; freqBar=false; swrilBar=false;
   }else{
-    swrilBar = true;
+    swrilBar = true; peakBar = false; freqBar=false; circleBar=false;
   }
 }
 
