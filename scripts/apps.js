@@ -18,6 +18,8 @@ var peakBar = false
 var circleBar = false
 var swrilBar = false
 
+var fftNumber =512
+
 //put click in the event listener below to get audio to play.
 container.addEventListener('#', function(){
     // audio source
@@ -63,23 +65,36 @@ file.addEventListener('change', function(){
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 128;
+    analyser.fftSize = fftNumber;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
-    const barWidth = (canvas.width/2)/bufferLength;
+    // const is to be used with Peak
+    // const barWidth = (canvas.width/2)/bufferLength;
+    // attempt at ternary operator
+    // const barWidth = (freqBar == false) ?canvas.width/bufferLength : (canvas.width/2)/bufferLength;
     // Below barWidth is to be used with simple bar frequency graph
-    // const barWidth = canvas.width/bufferLength;
+    
+    const barWidth = canvas.width/bufferLength;
     let barHeight;
     let x;
 
     // animate for bar graph frequency display
+    // in the if statement I need to add a new value to fftNumber variabel and barWidth
     function animate(){
         x = 0;
         ctx.clearRect(0,0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
         if(freqBar == true){
-          drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
+          drawBarVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
+          fftNumber = 1024
+        }else if(peakBar == true){
+          drawPeakVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
+          fftNumber = 512
+        }else if(circleBar == true){
+          drawCircleVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
+        }else{
+          drawSpiralVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
         }
         // drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray)
         requestAnimationFrame(animate);
@@ -88,62 +103,62 @@ file.addEventListener('change', function(){
 });
 
 // Below version of drawVisualiser is a simple bar frequency graph with one colour
-// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
-//     for(let i = 0; i < bufferLength; i++){
-//         barHeight = dataArray[i];
-//         ctx.fillStyle = 'red';
-//         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-//         x += barWidth;
-//     }
-// }
+function drawBarVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i];
+        ctx.fillStyle = 'red';
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+}
 
 // Below version of drawVisualiser, has a left and right
-// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
-//     for(let i = 0; i < bufferLength; i++){
-//         barHeight = dataArray[i] * 2;
-//         const red = i * barHeight/30;
-//         const green = i/2; 
-//         const blue = barHeight;
-//         ctx.fillStyle = 'white';
-//         ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight -30 , barWidth, 15);
-//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
-//         ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight, barWidth, barHeight);
-//         x += barWidth;
-//     }
-//     for(let i = 0; i < bufferLength; i++){
-//         barHeight = dataArray[i] * 2;
-//         const red = i * barHeight/30;
-//         const green = i/2; 
-//         const blue = barHeight;
-//         ctx.fillStyle = 'white';
-//         ctx.fillRect(x, canvas.height - barHeight -30 , barWidth, 15);
-//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
-//         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-//         x += barWidth;
-//     }
-// }
+function drawPeakVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i] * 2;
+        const red = i * barHeight/30;
+        const green = i/2; 
+        const blue = barHeight;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight -30 , barWidth, 15);
+        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+        ctx.fillRect(canvas.width/2 - x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i] * 2;
+        const red = i * barHeight/30;
+        const green = i/2; 
+        const blue = barHeight;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x, canvas.height - barHeight -30 , barWidth, 15);
+        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+}
 
 // Below drawVisualiser is a ciicle Visualiser
-// function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
-//     for(let i = 0; i < bufferLength; i++){
-//         barHeight = dataArray[i];
-//         ctx.save();
-//         ctx.translate(canvas.width/2, canvas.height/2);
-//         ctx.rotate(i + Math.PI * 2/ bufferLength);
-//         const red = i * barHeight/30;
-//         const green = i/2; 
-//         const blue = barHeight;
-//         ctx.fillStyle = 'white';
-//         ctx.fillRect(0, 0, barWidth, 15);
-//         ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
-//         ctx.fillRect(0, 0, barWidth, barHeight);
-//         x += barWidth;
-//         ctx.restore();
-//     }
-// }
+function drawCircleVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+    for(let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i];
+        ctx.save();
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.rotate(i + Math.PI * 2/ bufferLength);
+        const red = i * barHeight/30;
+        const green = i/2; 
+        const blue = barHeight;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, barWidth, 15);
+        ctx.fillStyle = 'rgb('+ red + ',' + green + ',' + blue + ')';
+        ctx.fillRect(0, 0, barWidth, barHeight);
+        x += barWidth;
+        ctx.restore();
+    }
+}
 
 // Below drawVisualiser is a strange spriral visualiser
-function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+function drawSpiralVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 1.5;
         ctx.save();
@@ -185,12 +200,16 @@ let selector = document.getElementById("visuals");
 selector.addEventListener('change', function(event){
   if(freqBar == true){
     console.log("This is freqbar",freqBar)
+    console.log(fftNumber)
   }else if(peakBar == true){
     console.log("This is peakBar",peakBar)
+    console.log(fftNumber)
   }else if(circleBar ==true){
     console.log("This is circleBar",circleBar)
+    console.log(fftNumber)
   }else{
     console.log("This is swirlBar",swrilBar)
+    console.log(fftNumber)
   }
 })
 
